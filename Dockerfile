@@ -87,7 +87,7 @@ RUN \
 		-c ${D_DIR}/config \
 		-l ${D_DIR}/config/first_init.log \
 		-L debug && \
-	sleep 5 && \
+	sleep 10 && \
 	deluge-console \
 		-c ${D_DIR}/config \
 			"config" && \

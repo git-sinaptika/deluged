@@ -95,7 +95,7 @@ restart this container (e.g. after a host restart), unless you stopped it with
 `sinaptika/deluged`  
 Name of the image on which we will base the whole container.
 
-The whole command:
+The whole command:  
 `docker create \`  
 `--name c_deluged \`  
 `-p 50200:50100 \`  

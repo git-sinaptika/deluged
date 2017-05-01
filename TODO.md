@@ -1,5 +1,5 @@
 #### Todo Docker:   
-- [ ] Create some instructions and a decent README  
+- [x] Create some instructions and a decent README  
   - [x] basic instructions done, need to expand
   - [x] remove some markdown specific features for readability on dh and plaintext
   - [ ] Create an advanced example with proxy, volume and docker network considerations
