@@ -1,5 +1,5 @@
 #!/bin/sh
-# Deluged entrypoin
+# Deluged entrypoint
 # Using ENV set at "docker run -e"
 # or "docker create -e"
 # info@sinaptika.net

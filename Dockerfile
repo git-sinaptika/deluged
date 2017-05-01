@@ -9,7 +9,6 @@ ENV \
 	TZ=Europe/London \
 	D_UID=1000 \
 	D_GID=1000 \
-	D_UMASK=022 \
 	D_USER=deluge \
 	D_GROUP=deluge \
 	D_LOG_LEVEL=warn \
@@ -41,32 +40,15 @@ RUN \
 		--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
 		--repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 		--repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
-			openssl \
-			zlib \
-			boost \
-			pwgen \
-			libtorrent-rasterbar \
-			geoip \
-			py2-pip \
-			py2-cffi \
-			py2-chardet \
-			py2-cryptography \
-			py2-enum34 \
-			py2-openssl \
-			py-setuptools \
-			py2-six \
-			py-xdg \
-			py2-geoip \
-			py-twisted && \
-	apk add --no-cache \
-		su-exec \
-		tini \
-		tzdata && \
+			su-exec tzdata tini pwgen \
+			openssl boost zlib unrar geoip \
+			py-setuptools py2-pip py2-openssl py2-chardet py-xdg py2-geoip py-twisted \
+			libtorrent-rasterbar && \
 	pip install --no-cache-dir \
-				service_identity \
-				incremental \
-				constantly \
-				packaging && \
+		service_identity \
+		incremental \
+		constantly \
+		packaging && \
 	wget -q \
 		http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz -O \
 		/tmp/GeoIP.dat.gz && gunzip /tmp/GeoIP.dat.gz && \
@@ -152,8 +134,8 @@ LABEL \
 	net.sinaptika.from="alpine:3.5" \
 	c_software_name="Deluge Daemon" \
 	c_software_url="http://deluge-torrent.org/" \
-	image.version="0.8" \
-	date.version="30.4.2017" \
+	image.version="0.9" \
+	date.version="1.5.2017" \
 	web_interface=true \
 	web_interface_port=${DELUGED_DAEMON_PORT} \
 	exposed_ports=${DELUGED_INCOMING_PORT},${DELUGED_DAEMON_PORT} \

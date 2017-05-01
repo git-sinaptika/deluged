@@ -12,12 +12,12 @@
   - [x] moved password generation to to script, only other way involves added software  
 - [ ] Find a solution to file ownership without adding chown scripts with COPY/ADD?   
   - [x] Already an entrypoint.sh in testing :(
-  - trying to make the simplest posible su-exec chown and exec script
+  - [x] trying to make the simplest posible su-exec chown and exec script
   - the correct way is still passing --build-arg on docker build or edditing Dockerfile
-  - ~~is --user and config files from outside a solution(chown and umask scripts are looking better and better)~~
+  - ~~is --user and config files from outside a solution(chown scripts are looking better and better)~~
    - not worth it, easier edditing Dockerfile or entrypoint.sh
-- [x] Is editing a Dockerfile viable on a NAS appliance?
-  - [x] Synology Rackstation works perfectly
+- [ ] Is usage viable on a NAS appliance?
+  - [x] Synology Rackstation works perfectly, what about devices cheaper than my car?
 - [x] Remove a couple more packages after build layer and start using --virtual-package in apk?
   - [x] no need for apk --virtual-package, readability is fine
   - [x] removed a couple of packages
@@ -34,7 +34,7 @@
 - [x] Test how deluged handles unexpected shutdown
   - [x] torrent.state and pid related stuff works after power off
   - [x] no need for any kind of init, since deluged is well behaved
-  - [ ] still tinit looks really nice (and is in all recent docker versions), should implement anyway?
+  - [x] still tini looks really nice (and is in all recent docker versions), should implement anyway?
   - [ ] should we let user decide, since docker create --init works without a hitch?
 - [x] Setting deluged configuration values:
   - [x] Using deluged-console like we are supposed to
