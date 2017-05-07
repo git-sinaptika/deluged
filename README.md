@@ -104,13 +104,17 @@ The whole command:
 `-v /home/my_username/deluged_config:/opt/deluge/config \`  
 `-v /path/to/downloads:/opt/deluge/downloads \`  
 `-v /path/to/complete:/opt/deluge/complete \`  
-`-e TZ=America/Costa_Rica`  
-`-e D_UID:1000 -e D_GID:1000`  
+`-e TZ=America/Costa_Rica \`  
+`-e D_UID:1000 -e D_GID:1000 \`  
 `--restart=unless-stopped \`  
 `sinaptika/deluged`
 
 #### Notes:
-Don't use `--net host` on docker create, unless you know what you are doing.  
-If you are using more than one interface with deluge, add docker networks to image.  
+Don't use `--net host` on *docker create*, unless you know what you are doing.  
+If you are using more than one interface with deluge, add docker network to container.  
 Macvlan works great, so does ipvlan (but ipvlan is not yet included in docker stable).  
-If you are having problems with file permission, check `-e D_UID=`
+If you are having problems with file permission, check `-e D_UID=`  
+If you are only using the web interface for accessing deluged (sinaptika/deluge-web),  
+you don't need to expose port 58846 on the host. If the container with deluge-web  
+is running on the same docker host (and they are in the same docker network),  
+they will be able to communicate just fine.
