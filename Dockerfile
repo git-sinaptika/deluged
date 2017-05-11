@@ -71,7 +71,7 @@ RUN \
  apk del \
   geoip openssl boost py2-pip && \
  rm -rf \
-  /root/*. && \
+  /root/* && \
  chmod +x \
   /usr/bin/deluged-pass.sh \
   /usr/bin/docker-entrypoint.sh
@@ -120,8 +120,8 @@ LABEL \
  net.sinaptika.from="alpine:3.5" \
  c_software_name="Deluge Daemon" \
  c_software_url="http://deluge-torrent.org/" \
- image.version="0.9.1" \
- date.version="7.5.2017" \
+ image.version="0.9.2" \
+ date.version="11.5.2017" \
  web_interface=true \
  web_interface_port=${DELUGED_DAEMON_PORT} \
  exposed_ports=${DELUGED_INCOMING_PORT},${DELUGED_DAEMON_PORT} \

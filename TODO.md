@@ -13,7 +13,7 @@
 - [ ] Find a solution to file ownership without adding chown scripts with COPY/ADD?   
   - [x] Already an entrypoint.sh in testing :(
   - [x] trying to make the simplest posible su-exec chown and exec script
-  - the correct way is still passing --build-arg on docker build or edditing Dockerfile
+  - the correct way is still passing --build-arg on docker build or editing Dockerfile
   - ~~is --user and config files from outside a solution(chown scripts are looking better and better)~~
    - not worth it, easier edditing Dockerfile or entrypoint.sh
 - [ ] Is usage viable on a NAS appliance?
@@ -26,7 +26,7 @@
   - should we define all 3? Should we also set move on complete to true, for volumes on cow fs?
   - should we create a separate volume for ssl cert?
 - [ ] Is there to much metadata in the image via ENV and LABEL?
-  - generating reverse proxy templates works wihout a problem (nginx, caddy), but is it of use to anyone else?
+  - generating reverse proxy templates works without a problem (nginx, caddy), but is it of use to anyone else?
 
 #### Todo Deluge
 - [x] Define sane config location (/opt/deluge/config works nicely)
@@ -46,7 +46,7 @@
 - [x] Performance testing with docker network drivers
   - [x] works as expected on default (legacy bridge)
   - [x] works as expected on vlan and macvlan
-  - no difference measured on container and host deluged on 1gb
+  - no difference measured on container and host deluged on 1gb and 10gb
   - we were lucky and tested when ubuntu 17.04 came out
   - set insane connection numbers and it was suprisingly stable, gj libtorrent and deluge guys
   - udp works as advertised
