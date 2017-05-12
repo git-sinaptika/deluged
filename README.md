@@ -1,11 +1,11 @@
 # sinaptika/deluged
 Docker image for deluged  
 From alpine:3.5  
-Deluge: 1.3.14  
+Deluge: 1.3.15  
 This image contains only Deluge Daemon.  
 Deluge daemon port: 58846  
 Deluged incoming port tcp&udp: 50100  
-[Deluge 1.3.14](http://deluge-torrent.org/)  
+[Deluge 1.3.15](http://deluge-torrent.org/)  
 [Github](https://github.com/git-sinaptika/hs-deluged)  
 
 
