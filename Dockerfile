@@ -4,7 +4,7 @@
 FROM alpine:3.5
 
 ENV \
- DELUGE_VERSION=1.3.14 \
+ DELUGE_VERSION=1.3.15 \
  D_DIR=/opt/deluge \
  TZ=Europe/London \
  D_UID=1000 \
@@ -120,8 +120,8 @@ LABEL \
  net.sinaptika.from="alpine:3.5" \
  c_software_name="Deluge Daemon" \
  c_software_url="http://deluge-torrent.org/" \
- image.version="0.9.2" \
- date.version="11.5.2017" \
+ image.version="0.9.3" \
+ date.version="12.5.2017" \
  web_interface=true \
  web_interface_port=${DELUGED_DAEMON_PORT} \
  exposed_ports=${DELUGED_INCOMING_PORT},${DELUGED_DAEMON_PORT} \
