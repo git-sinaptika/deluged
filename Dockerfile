@@ -62,11 +62,11 @@ RUN \
  python setup.py -q build && \
  python setup.py -q install && \
  rm -rf \
-  /usr/lib/python2.7/site-packages/deluge-1.3.14-py2.7.egg/share/icons/* \
-  /usr/lib/python2.7/site-packages/deluge-1.3.14-py2.7.egg/share/pixmaps/* \
-  /usr/lib/python2.7/site-packages/deluge-1.3.14-py2.7.egg/deluge/data/pixmaps/* \
-  /usr/lib/python2.7/site-packages/deluge-1.3.14-py2.7.egg/deluge/ui/gtkui/* \
-  /usr/lib/python2.7/site-packages/deluge-1.3.14-py2.7.egg/deluge/ui/web/* \
+  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/share/icons/* \
+  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/share/pixmaps/* \
+  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/data/pixmaps/* \
+  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/gtkui/* \
+  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/web/* \
   /usr/bin/deluge /usr/bin/deluge-web /usr/bin/deluge-gtk && \
  apk del \
   geoip openssl boost py2-pip && \
