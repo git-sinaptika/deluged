@@ -1,6 +1,6 @@
 # sinaptika/deluged
 Docker image for deluged  
-From alpine:3.5  
+From alpine:3.6  
 Deluge: 1.3.15  
 This image contains only Deluge Daemon.  
 Deluge daemon port: 58846  

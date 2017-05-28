@@ -1,7 +1,7 @@
 #Maintainer info@sinaptika.net
 #deluge http://deluge-torrent.org/
 #deluged image
-FROM alpine:3.5
+FROM alpine:3.6
 
 ENV \
  DELUGE_VERSION=1.3.15 \
@@ -37,44 +37,45 @@ COPY \
 
 RUN \
  apk add --no-cache \
+  su-exec tzdata tini pwgen \
+  openssl boost zlib unrar geoip libressl2.5-libcrypto libressl2.5-libssl \
+  py-setuptools py2-pip py2-openssl py2-chardet py-twisted py2-geoip \
+  py-mako intltool && \
+ apk add --no-cache \
   --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
   --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
   --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
-   su-exec tzdata tini pwgen \
-   openssl boost zlib unrar geoip \
-   py-setuptools py2-pip py2-openssl py2-chardet py-xdg py2-geoip py-twisted \
-   libtorrent-rasterbar && \
+  py-xdg libtorrent-rasterbar && \
  pip install --no-cache-dir \
   service_identity \
   incremental \
   constantly \
   packaging && \
- wget -q \
-  http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz -O \
+ wget \
+  https://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz -O \
   /tmp/GeoIP.dat.gz && gunzip /tmp/GeoIP.dat.gz && \
  mv \
   /tmp/GeoIP.dat /usr/share/GeoIP && \
  cd /root && \
- wget -qO- \
+  wget -qO- \
   http://download.deluge-torrent.org/source/deluge-${DELUGE_VERSION}.tar.gz | tar xz && \
  cd \
   deluge-${DELUGE_VERSION}/ && \
  python setup.py -q build && \
  python setup.py -q install && \
  rm -rf \
-  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/share/icons/* \
-  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/share/pixmaps/* \
+  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/share/* \
   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/data/pixmaps/* \
   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/gtkui/* \
-  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/web/* \
-  /usr/bin/deluge /usr/bin/deluge-web /usr/bin/deluge-gtk && \
- apk del \
-  geoip openssl boost py2-pip && \
- rm -rf \
-  /root/* && \
- chmod +x \
-  /usr/bin/deluged-pass.sh \
-  /usr/bin/docker-entrypoint.sh
+  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/i18n/* \
+  /usr/bin/deluge /usr/bin/deluge-gtk && \
+  apk del \
+   geoip openssl boost py2-pip intltool && \
+  rm -rf \
+   /root/* && \
+  chmod +x \
+   /usr/bin/deluged-pass.sh \
+   /usr/bin/docker-entrypoint.sh
 
 WORKDIR \
  ${D_DIR}
@@ -117,11 +118,11 @@ LABEL \
  net.sinaptika.maintainer="info@sinaptika.net" \
  net.sinaptika.name="deluged" \
  net.sinaptika.branch="master" \
- net.sinaptika.from="alpine:3.5" \
+ net.sinaptika.from="alpine:3.6" \
  c_software_name="Deluge Daemon" \
  c_software_url="http://deluge-torrent.org/" \
- image.version="0.9.3" \
- date.version="12.5.2017" \
+ image.version="0.9.4" \
+ date.version="28.5.2017" \
  web_interface=true \
  web_interface_port=${DELUGED_DAEMON_PORT} \
  exposed_ports=${DELUGED_INCOMING_PORT},${DELUGED_DAEMON_PORT} \
