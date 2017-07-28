@@ -1,10 +1,11 @@
 #Maintainer info@sinaptika.net
 #deluge http://deluge-torrent.org/
 #deluged image
-FROM sinaptika/libtorrent:1.0.11
+FROM sinaptika/libtorrent:1.1.4
 
 ENV \
  DELUGE_VERSION=1.3.15 \
+ LIBTORRENT_VERSION=1.1.4 \
  D_DIR=/opt/deluge \
  TZ=Europe/London \
  D_UID=1000 \
@@ -65,7 +66,8 @@ RUN \
   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/data/pixmaps/* \
   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/gtkui/* \
   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/i18n/* \
-  /usr/bin/deluge /usr/bin/deluge-gtk && \
+  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/web/* \
+  /usr/bin/deluge /usr/bin/deluge-web /usr/bin/deluge-gtk && \
   apk del \
    geoip openssl py2-pip py-mako intltool && \
   rm -rf \
@@ -115,11 +117,11 @@ LABEL \
  net.sinaptika.maintainer="info@sinaptika.net" \
  net.sinaptika.name="deluged" \
  net.sinaptika.branch="dev" \
- net.sinaptika.from="alpine:3.6","sinaptika/libtorrent:1.0.11" \
+ net.sinaptika.from="alpine:3.6","sinaptika/libtorrent:1.1.4" \
  c_software_name="Deluge Daemon" \
  c_software_url="http://deluge-torrent.org/" \
- image.version="0.9.4" \
- date.version="28.5.2017" \
+ image.version="0.9.5" \
+ date.version="28.7.2017" \
  web_interface="true" \
  web_interface_port=${DELUGED_DAEMON_PORT} \
  exposed_ports=${DELUGED_INCOMING_PORT},${DELUGED_DAEMON_PORT} \
