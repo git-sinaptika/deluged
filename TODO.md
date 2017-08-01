@@ -1,54 +1,6 @@
-#### Todo Docker:   
-- [x] Create some instructions and a decent README  
-  - [x] basic instructions done, need to expand
-  - [x] remove some markdown specific features for readability on dh and plaintext
-  - [ ] Create an advanced example with proxy, volume and docker network considerations
-- [x] Remove pwgen generated password for deluged from build logs and images hosted on docker-hub   
-  - [x] removed password generation from build phase  
-  - [x] ~~docker pull still gets the pass from built image, ONBUILD is of no use in this case~~
-  - [x] redo *echo user:pwgen -1 8:10 >> auth* into a script in Dockerfile, then let user docker exec?
-  - [x] deluged-pass.sh done, placed in /opt/deluge/config/ and linked to /usr/bin
-- [x] Find some best practices on handling secrets in docker containers?
-  - [x] moved password generation to to script, only other way involves added software  
-- [ ] Find a solution to file ownership without adding chown scripts with COPY/ADD?   
-  - [x] Already an entrypoint.sh in testing :(
-  - [x] trying to make the simplest posible su-exec chown and exec script
-  - the correct way is still passing --build-arg on docker build or editing Dockerfile
-  - ~~is --user and config files from outside a solution(chown scripts are looking better and better)~~
-   - not worth it, easier edditing Dockerfile or entrypoint.sh
-- [ ] Is usage viable on a NAS appliance?
-  - [x] Synology Rackstation works perfectly, what about devices cheaper than my car?
-- [x] Remove a couple more packages after build layer and start using --virtual-package in apk?
-  - [x] no need for apk --virtual-package, readability is fine
-  - [x] removed a couple of packages
-  - [x] removed build files
-- [ ] Define more volumes in Dockerfile or let it be?
-  - should we define all 3? Should we also set move on complete to true, for volumes on cow fs?
-  - should we create a separate volume for ssl cert?
-- [ ] Is there to much metadata in the image via ENV and LABEL?
-  - generating reverse proxy templates works without a problem (nginx, caddy), but is it of use to anyone else?
-
-#### Todo Deluge
-- [x] Define sane config location (/opt/deluge/config works nicely)
-- [x] Set ENV in a way, that enables manual Dockerfile edditing
-- [x] Test how deluged handles unexpected shutdown
-  - [x] torrent.state and pid related stuff works after power off
-  - [x] no need for any kind of init, since deluged is well behaved
-  - [x] still tini looks really nice (and is in all recent docker versions), should implement anyway?
-  - [ ] should we let user decide, since docker create --init works without a hitch?
-- [x] Setting deluged configuration values:
-  - [x] Using deluged-console like we are supposed to
-  - [x] When starting deluged, give it some time, before setting values
-  - [x] Separate commands, so even on failure of one, others values get set
-  - [x] Enable debug for first run
-  - [x] Shut down deluged with deluge-console not kill!!
-  - Exit codes make build fails on docker-hub :( :(
-- [x] Performance testing with docker network drivers
-  - [x] works as expected on default (legacy bridge)
-  - [x] works as expected on vlan and macvlan
-  - no difference measured on container and host deluged on 1gb and 10gb
-  - we were lucky and tested when ubuntu 17.04 came out
-  - set insane connection numbers and it was suprisingly stable, gj libtorrent and deluge guys
-  - udp works as advertised
-  - dht works as advertised
-- [ ] Figure out compiling just the needed modules with python setuptools
+#### Todo docker:
+- unify all images, to make them easier to maintain (deluged, deluge-web)
+- make ubuntu and alpine-basic image
+#### Todo deluged:
+- try to test more plugins
+#### Todo deluge-web:
