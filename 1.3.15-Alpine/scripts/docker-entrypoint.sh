@@ -31,4 +31,4 @@ exec /sbin/su-exec \
    deluged -d \
     -c ${D_DIR}/config \
     -l ${D_DIR}/config/deluged.log \
-    -L ${D_LOG_LEVEL}
+    -L ${D_D_LOG_LEVEL}
