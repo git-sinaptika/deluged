@@ -2,7 +2,7 @@
 Docker image for deluged  
 From alpine:3.6  
 [Deluge: 1.3.15](http://deluge-torrent.org/)    
-[libtorrent: 1.1.4](http://www.libtorrent.org/)    
+[libtorrent: 1.1.3](http://www.libtorrent.org/)    
 This image contains only Deluge Daemon.  
 Deluge daemon port: 58846  
 Deluged incoming port tcp&udp: 50100  
@@ -141,4 +141,8 @@ If the container with deluge-web is running on the same docker host
 
 **0.2**  
 - fixing typos in readme, some basic editing in dockerfile
-  - starting to unify structure/style in deluged, deluge-web and deluge images
+  - starting to unify structure/style in deluged, deluge-web and deluge images  
+
+**0.3**
+- downgraded libtorrent to 1.1.3 for stable, latest, and 1.3.15 tags
+- added dev and stable
