@@ -151,8 +151,8 @@ LABEL \
  net.sinaptika.from="alpine:3.6" \
  c_software_name="Deluge Daemon" \
  c_software_url="http://deluge-torrent.org/" \
- image.version="0.2" \
- date.version="1.8.2017" \
+ image.version="0.3" \
+ date.version="3.8.2017" \
  web_interface="true" \
  web_interface_port=${D_D_PORT} \
  exposed_ports=${D_D_PORT},${D_D_INCOMING_PORT},${D_D_INCOMING_PORT}/udp  \
