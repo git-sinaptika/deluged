@@ -6,8 +6,8 @@ FROM alpine:3.6
 ENV \
 #Enviroment variables for building the image.
  DELUGE_VERSION="1.3.15" \
- LIBTORRENT_VERSION="1.1.3" \
- _LIBTORRENT_VERSION="1_1_3" \
+ LIBTORRENT_VERSION="1.0.11" \
+ _LIBTORRENT_VERSION="1_0_11" \
  D_DIR="/opt/deluge" \
  D_USER="deluge" \
  D_GROUP="deluge" \
