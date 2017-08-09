@@ -20,54 +20,54 @@ ENV \
  D_GID="1000" \
  D_D_LOG_LEVEL="warn"
 
- RUN \
+RUN \
 #Create directory structure and add user:group.
-  mkdir -p \
-   ${D_DIR} \
-   ${D_DIR}/config \
-   ${D_DIR}/complete \
-   ${D_DIR}/downloads && \
-  addgroup -g \
-   ${D_GID} -S ${D_GROUP} && \
-  adduser \
-   -h ${D_DIR} \
-   -g "Deluge system user" \
-   -G ${D_GROUP} \
-   -S -D \
-   -u ${D_UID} ${D_USER}
+ mkdir -p \
+  ${D_DIR} \
+  ${D_DIR}/config \
+  ${D_DIR}/complete \
+  ${D_DIR}/downloads && \
+ addgroup -g \
+  ${D_GID} -S ${D_GROUP} && \
+ adduser \
+  -h ${D_DIR} \
+  -g "Deluge system user" \
+  -G ${D_GROUP} \
+  -S -D \
+  -u ${D_UID} ${D_USER}
 
 COPY \
  scripts/deluged-pass.sh \
  scripts/docker-entrypoint.sh \
  /usr/bin/
 
- RUN \
+RUN \
 #Libtorrent
-  apk add --no-cache --virtual .build_libtorrent \
-   wget ca-certificates alpine-sdk boost-dev libressl-dev python2-dev && \
-  cd /root && \
-  wget -qO-\
-   https://github.com/arvidn/libtorrent/releases/download/libtorrent-${_LIBTORRENT_VERSION}/libtorrent-rasterbar-${LIBTORRENT_VERSION}.tar.gz | \
-   tar xvz && \
-  cd libtorrent-rasterbar-${LIBTORRENT_VERSION} && \
-  ./configure \
-   --build=$CBUILD \
-   --host=$CHOST \
-   --prefix=/usr \
-   --enable-python-binding \
-   --with-boost-system=boost_system \
-   --enable-debug=no \
-   --disable-debug \
-   --quiet && \
-  make && \
-  make install-strip && \
-  rm -rf /usr/lib/libtorrent-rasterbar.a && \
-  strip /usr/lib/python2.7/site-packages/libtorrent.so && \
-  strip /usr/lib/libtorrent-rasterbar.so && \
-  rm -rf libtorrent-rasterbar-${LIBTORRENT_VERSION} && \
-  apk del .build_libtorrent && \
-  apk add --no-cache --virtual .runtime_libtorrent \
-   boost-python boost-system libgcc libstdc++ python2 && \
+ apk add --no-cache --virtual .build_libtorrent \
+  wget ca-certificates alpine-sdk boost-dev libressl-dev python2-dev && \
+ cd /root && \
+ wget -qO-\
+  https://github.com/arvidn/libtorrent/releases/download/libtorrent-${_LIBTORRENT_VERSION}/libtorrent-rasterbar-${LIBTORRENT_VERSION}.tar.gz | \
+  tar xvz && \
+ cd libtorrent-rasterbar-${LIBTORRENT_VERSION} && \
+ ./configure \
+  --build=$CBUILD \
+  --host=$CHOST \
+  --prefix=/usr \
+  --enable-python-binding \
+  --with-boost-system=boost_system \
+  --enable-debug=no \
+  --disable-debug \
+  --quiet && \
+ make && \
+ make install-strip && \
+ rm -rf /usr/lib/libtorrent-rasterbar.a && \
+ strip /usr/lib/python2.7/site-packages/libtorrent.so && \
+ strip /usr/lib/libtorrent-rasterbar.so && \
+ rm -rf libtorrent-rasterbar-${LIBTORRENT_VERSION} && \
+ apk del .build_libtorrent && \
+ apk add --no-cache --virtual .runtime_libtorrent \
+  boost-python boost-system libgcc libstdc++ python2 && \
 #deluge
   apk add --no-cache --virtual .system \
    tzdata su-exec tini pwgen unrar && \
@@ -147,7 +147,7 @@ ENTRYPOINT \
 LABEL \
  net.sinaptika.maintainer="info@sinaptika.net" \
  net.sinaptika.name="deluged" \
- net.sinaptika.branch="dev" \
+ net.sinaptika.branch="master" \
  net.sinaptika.from="alpine:3.6" \
  c_software_name="Deluge Daemon" \
  c_software_url="http://deluge-torrent.org/" \
