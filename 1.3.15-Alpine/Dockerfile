@@ -108,33 +108,33 @@ RUN \
 WORKDIR \
  ${D_DIR}/config
 
- RUN \
+RUN \
 #Deluged first run
-  /usr/bin/deluged \
-   -c ${D_DIR}/config \
-   -l ${D_DIR}/config/first_init.log \
-   -L debug && \
-  sleep 10 && \
+ /usr/bin/deluged \
+  -c ${D_DIR}/config \
+  -l ${D_DIR}/config/first_init.log \
+  -L debug && \
+ sleep 10 && \
 #Deluged configuration
-  deluge-console \
-   -c ${D_DIR}/config "config" && \
-  deluge-console \
-   -c ${D_DIR}/config "config -s allow_remote true" && \
-  deluge-console \
-   -c ${D_DIR}/config "config -s move_completed_path ${D_DIR}/complete" && \
-  deluge-console \
-   -c ${D_DIR}/config "config -s download_location ${D_DIR}/downloads" && \
-  deluge-console \
-   -c ${D_DIR}/config "config -s daemon_port ${D_D_PORT}" && \
-  deluge-console \
-   -c ${D_DIR}/config "config -s random_port false" && \
-  deluge-console \
-   -c ${D_DIR}/config "config -s listen_ports (${D_D_INCOMING_PORT},${D_D_INCOMING_PORT})" && \
-  deluge-console \
-   -c ${D_DIR}/config "halt" && \
-  chown -R \
-   ${D_USER}:${D_GROUP} \
-   ${D_DIR}
+ deluge-console \
+  -c ${D_DIR}/config "config" && \
+ deluge-console \
+  -c ${D_DIR}/config "config -s allow_remote true" && \
+ deluge-console \
+  -c ${D_DIR}/config "config -s move_completed_path ${D_DIR}/complete" && \
+ deluge-console \
+  -c ${D_DIR}/config "config -s download_location ${D_DIR}/downloads" && \
+ deluge-console \
+  -c ${D_DIR}/config "config -s daemon_port ${D_D_PORT}" && \
+ deluge-console \
+  -c ${D_DIR}/config "config -s random_port false" && \
+ deluge-console \
+  -c ${D_DIR}/config "config -s listen_ports (${D_D_INCOMING_PORT},${D_D_INCOMING_PORT})" && \
+ deluge-console \
+  -c ${D_DIR}/config "halt" && \
+ chown -R \
+  ${D_USER}:${D_GROUP} \
+  ${D_DIR}
 
 EXPOSE \
  ${D_D_PORT} \
@@ -147,7 +147,7 @@ ENTRYPOINT \
 LABEL \
  net.sinaptika.maintainer="info@sinaptika.net" \
  net.sinaptika.name="deluged" \
- net.sinaptika.branch="master" \
+ net.sinaptika.branch="1.3.15-Alpine" \
  net.sinaptika.from="alpine:3.6" \
  c_software_name="Deluge Daemon" \
  c_software_url="http://deluge-torrent.org/" \
