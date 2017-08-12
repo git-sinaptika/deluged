@@ -5,9 +5,9 @@ FROM alpine:3.6
 
 ENV \
 #Enviroment variables for building the image.
- DELUGE_VERSION="1.3.15" \
- LIBTORRENT_VERSION="1.1.2" \
- _LIBTORRENT_VERSION="1_1_2" \
+ DELUGE_VERSION="2.0b1" \
+ LIBTORRENT_VERSION="1.1.4" \
+ _LIBTORRENT_VERSION="1_1_4" \
  D_DIR="/opt/deluge" \
  D_USER="deluge" \
  D_GROUP="deluge" \
@@ -72,23 +72,29 @@ RUN \
   apk add --no-cache --virtual .system \
    tzdata su-exec tini pwgen unrar && \
   apk add --no-cache --virtual .build_deluge \
-   geoip openssl py2-pip intltool py-mako && \
+   gettext git geoip openssl py2-pip intltool py-mako && \
   apk add --no-cache --virtual .runtime_deluge \
    py-setuptools py2-openssl py-twisted py2-geoip && \
-#automat package needed for deluge-web only
+#automat package needed for deluge-web only, slimit needed for deluge 2.x
  pip install --no-cache-dir \
-  chardet pyxdg service_identity incremental constantly packaging && \
+  chardet pyxdg service_identity incremental constantly packaging slimit && \
  wget \
   https://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz -O \
   /tmp/GeoIP.dat.gz && gunzip /tmp/GeoIP.dat.gz && \
  mv \
   /tmp/GeoIP.dat /usr/share/GeoIP && \
-  wget -qO- \
-  http://download.deluge-torrent.org/source/deluge-${DELUGE_VERSION}.tar.gz | tar xz && \
- cd \
-  deluge-${DELUGE_VERSION}/ && \
+ git clone git://deluge-torrent.org/deluge.git && \
+ cd deluge && \
+ git checkout tags/deluge-${DELUGE_VERSION} && \
  python setup.py -q build && \
  python setup.py -q install && \
+# Using Git to get deluge source now.
+#  wget -qO- \
+#  http://git.deluge-torrent.org/deluge/snapshot/deluge-deluge-${DELUGE_VERSION}.tar.gz | tar xvz && \
+# cd \
+#  deluge-deluge-${DELUGE_VERSION}/ && \
+# python setup.py -q build && \
+# python setup.py -q install && \
 #Cleanup and chmod for entrypoint and pwgen script.
  rm -rf \
   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/share/* \
@@ -117,7 +123,7 @@ RUN \
  sleep 10 && \
 #Deluged configuration
  deluge-console \
-  -c ${D_DIR}/config "config" && \
+  -c ${D_DIR}/config "status" && \
  deluge-console \
   -c ${D_DIR}/config "config -s allow_remote true" && \
  deluge-console \
@@ -151,8 +157,8 @@ LABEL \
  net.sinaptika.from="alpine:3.6" \
  c_software_name="Deluge Daemon" \
  c_software_url="http://deluge-torrent.org/" \
- image.version="0.3" \
- date.version="3.8.2017" \
+ image.version="0.4" \
+ date.version="12.8.2017" \
  web_interface="true" \
  web_interface_port=${D_D_PORT} \
  exposed_ports=${D_D_PORT},${D_D_INCOMING_PORT},${D_D_INCOMING_PORT}/udp  \
