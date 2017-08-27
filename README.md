@@ -1,14 +1,16 @@
 # sinaptika/deluged
+[Github](https://github.com/git-sinaptika/deluged)  
 Docker image for deluged  
 From alpine:3.6  
+From [sinaptika/libtorrent](https://hub.docker.com/r/sinaptika/libtorrent/)  
+
 [Deluge: 1.3.15](http://deluge-torrent.org/)    
-[libtorrent: 1.0.11-1.1.3](http://www.libtorrent.org/)    
+[libtorrent: 1.0.11-1.1.4](http://www.libtorrent.org/)    
 This image contains only Deluge Daemon.  
 Deluge daemon port: 58846  
 Deluged incoming port tcp&udp: 50100  
-[Github](https://github.com/git-sinaptika/deluged)  
 
-
+Docker tags: latest(1.3.15), dev (2.0b1)
 #### Simple instructions:  
 1. Pull the image from docker-hub:  
 `docker pull sinaptika/deluged`  
@@ -146,3 +148,6 @@ If the container with deluge-web is running on the same docker host
 **0.3**
 - downgraded libtorrent to 1.0.11 for stable, latest, and 1.3.15 tags
 - added dev and stable
+
+**0.4**
+- Changed to multi-stage build

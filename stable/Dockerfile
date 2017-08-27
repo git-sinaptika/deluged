@@ -1,13 +1,15 @@
 #Maintainer info@sinaptika.net
 #deluge http://deluge-torrent.org/
 #deluged image
+FROM sinaptika/libtorrent:1.0.11 as builder_libtorrent
+
 FROM alpine:3.6
 
 ENV \
 #Enviroment variables for building the image.
  DELUGE_VERSION="1.3.15" \
  LIBTORRENT_VERSION="1.0.11" \
- _LIBTORRENT_VERSION="1_0_11" \
+ LIBTORRENT_SO="8" \
  D_DIR="/opt/deluge" \
  D_USER="deluge" \
  D_GROUP="deluge" \
@@ -37,37 +39,39 @@ RUN \
   -u ${D_UID} ${D_USER}
 
 COPY \
+#Copy entrypoint and deluged-pass.sh
  scripts/deluged-pass.sh \
  scripts/docker-entrypoint.sh \
  /usr/bin/
 
+COPY \
+#Copy libtorrent-rasterbar from sinaptika/libtorrent
+ --from=builder_libtorrent \
+  /usr/lib/libtorrent-rasterbar.la \
+  /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 \
+  /usr/lib/
+
+COPY \
+#Copy python bindings from sinaptika/libtorrent
+ --from=builder_libtorrent \
+  /usr/lib/python2.7/site-packages/libtorrent.so \
+  /usr/lib/python2.7/site-packages/python_libtorrent-${LIBTORRENT_VERSION}-py2.7.egg-info \
+  /usr/lib/python2.7/site-packages/
+
+COPY \
+#Copy pkgconfig
+ --from=builder_libtorrent \
+  /usr/lib/pkgconfig/libtorrent-rasterbar.pc \
+  /usr/lib/pkgconfig/
+
 RUN \
 #Libtorrent
- apk add --no-cache --virtual .build_libtorrent \
-  wget ca-certificates alpine-sdk boost-dev libressl-dev python2-dev && \
- cd /root && \
- wget -qO-\
-  https://github.com/arvidn/libtorrent/releases/download/libtorrent-${_LIBTORRENT_VERSION}/libtorrent-rasterbar-${LIBTORRENT_VERSION}.tar.gz | \
-  tar xvz && \
- cd libtorrent-rasterbar-${LIBTORRENT_VERSION} && \
- ./configure \
-  --build=$CBUILD \
-  --host=$CHOST \
-  --prefix=/usr \
-  --enable-python-binding \
-  --with-boost-system=boost_system \
-  --enable-debug=no \
-  --disable-debug \
-  --quiet && \
- make && \
- make install-strip && \
- rm -rf /usr/lib/libtorrent-rasterbar.a && \
- strip /usr/lib/python2.7/site-packages/libtorrent.so && \
- strip /usr/lib/libtorrent-rasterbar.so && \
- rm -rf libtorrent-rasterbar-${LIBTORRENT_VERSION} && \
- apk del .build_libtorrent && \
+ cd && \
  apk add --no-cache --virtual .runtime_libtorrent \
   boost-python boost-system libgcc libstdc++ python2 && \
+ ln -s /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 /usr/lib/libtorrent-rasterbar.so && \
+ ln -s /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO} && \
+ ldconfig -n -v /usr/lib && \
 #deluge
  apk add --no-cache --virtual .system \
   tzdata su-exec tini pwgen unrar && \
@@ -84,26 +88,26 @@ RUN \
  mv \
   /tmp/GeoIP.dat /usr/share/GeoIP && \
   wget -qO- \
-  http://download.deluge-torrent.org/source/deluge-${DELUGE_VERSION}.tar.gz | tar xz && \
+   http://download.deluge-torrent.org/source/deluge-${DELUGE_VERSION}.tar.gz | tar xz && \
  cd \
   deluge-${DELUGE_VERSION}/ && \
  python setup.py -q build && \
  python setup.py -q install && \
 #Cleanup and chmod for entrypoint and pwgen script.
- rm -rf \
-  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/share/* \
-  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/data/pixmaps/* \
-  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/gtkui/* \
-  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/i18n/* \
-  /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/web/* \
-  /usr/bin/deluge /usr/bin/deluge-web /usr/bin/deluge-gtk && \
- apk del .build_deluge && \
- cd /root && \
- rm -rf \
-  /root/* && \
- chmod +x \
-  /usr/bin/deluged-pass.sh \
-  /usr/bin/docker-entrypoint.sh
+  rm -rf \
+   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/share/* \
+   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/data/pixmaps/* \
+   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/gtkui/* \
+   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/i18n/* \
+   /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/web/* \
+   /usr/bin/deluge /usr/bin/deluge-web /usr/bin/deluge-gtk && \
+  apk del .build_deluge && \
+  cd /root && \
+  rm -rf \
+   /root/* && \
+  chmod +x \
+   /usr/bin/deluged-pass.sh \
+   /usr/bin/docker-entrypoint.sh
 
 WORKDIR \
  ${D_DIR}/config
@@ -146,13 +150,13 @@ ENTRYPOINT \
 
 LABEL \
  net.sinaptika.maintainer="info@sinaptika.net" \
- net.sinaptika.name="deluged" \
- net.sinaptika.branch="stable" \
+ net.sinaptika.name="stable" \
+ net.sinaptika.branch="1.3.15-Alpine" \
  net.sinaptika.from="alpine:3.6" \
  c_software_name="Deluge Daemon" \
  c_software_url="http://deluge-torrent.org/" \
- image.version="0.3" \
- date.version="3.8.2017" \
+ image.version="0.4" \
+ date.version="27.8.2017" \
  web_interface="true" \
  web_interface_port=${D_D_PORT} \
  exposed_ports=${D_D_PORT},${D_D_INCOMING_PORT},${D_D_INCOMING_PORT}/udp  \
