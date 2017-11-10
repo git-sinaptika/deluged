@@ -10,7 +10,7 @@ FROM alpine:3.6
 #Pass at docker create or docker run (-e VARIABLE=value).
 ENV \
     DELUGE_VERSION="2.0b1" \
-    LIBTORRENT_VERSION="1.1.4" \
+    LIBTORRENT_VERSION="1.1.3" \
     LIBTORRENT_SO="9" \
     D_DIR="/opt/deluge" \
     D_USER="deluge" \
