@@ -1,7 +1,7 @@
 #Maintainer info@sinaptika.net
 #deluge http://deluge-torrent.org/
 #deluged image
-FROM sinaptika/libtorrent:1.1.4 as builder_libtorrent
+FROM sinaptika/libtorrent:1.1.3 as builder_libtorrent
 
 FROM alpine:3.6
 
@@ -136,6 +136,8 @@ RUN \
         -c ${D_DIR}/config "config -s listen_ports (${D_D_INCOMING_PORT},${D_D_INCOMING_PORT})" && \
     deluge-console \
         -c ${D_DIR}/config "halt" && \
+    rm -rf \
+        ${D_DIR}/config/ssl/* && \
     chown -R \
         ${D_USER}:${D_GROUP} \
         ${D_DIR}
