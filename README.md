@@ -10,7 +10,7 @@ This image contains only Deluge Daemon.
 Deluge daemon port: 58846  
 Deluged incoming port tcp&udp: 50100  
 
-Docker tags: latest(1.3.15), dev (2.0b1)
+Docker tags: latest/0.6 (1.3.15), dev (2.0b1)
 #### Simple instructions:  
 1. Pull the image from docker-hub:  
 `docker pull sinaptika/deluged`  
@@ -156,3 +156,7 @@ If the container with deluge-web is running on the same docker host
 - Dir strcuture changes on github and tag changes on docker hub
 - Some syntax changes
 - Added first run with debug for deluge-web
+
+**0.6**
+- Changed git source from git:deluge.org to github 
+- removed selfsigned certs from image
