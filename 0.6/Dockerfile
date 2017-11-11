@@ -78,7 +78,7 @@ RUN \
     apk add --no-cache --virtual .system \
         tzdata su-exec tini pwgen unrar && \
     apk add --no-cache --virtual .build_deluge \
-        git geoip openssl py2-pip intltool py-mako && \
+        geoip openssl py2-pip intltool py-mako && \
     apk add --no-cache --virtual .runtime_deluge \
         py-setuptools py2-openssl py-twisted py2-geoip && \
     pip install --no-cache-dir \
@@ -88,9 +88,9 @@ RUN \
         /tmp/GeoIP.dat.gz && gunzip /tmp/GeoIP.dat.gz && \
     mv \
         /tmp/GeoIP.dat /usr/share/GeoIP && \
-    git clone https://github.com/deluge-torrent/deluge.git && \
-    cd deluge && \
-    git checkout tags/deluge-${DELUGE_VERSION} && \
+    wget -qO- \
+        http://download.deluge-torrent.org/source/deluge-${DELUGE_VERSION}.tar.gz | tar xz && \
+    cd deluge-${DELUGE_VERSION} && \
     python setup.py -q build && \
     python setup.py -q install && \
     rm -rf \
