@@ -71,18 +71,18 @@ COPY \
 RUN \
     cd && \
     apk add --no-cache --virtual .runtime_libtorrent \
-        boost-python boost-system libgcc libstdc++ python2 && \
+        boost-python boost-system libstdc++ python2 && \
     ln -s /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 /usr/lib/libtorrent-rasterbar.so && \
     ln -s /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO} && \
     ldconfig -n -v /usr/lib && \
     apk add --no-cache --virtual .system \
-        tzdata su-exec tini pwgen unrar && \
+        tzdata su-exec tini pwgen p7zip && \
     apk add --no-cache --virtual .build_deluge \
-        geoip openssl py2-pip intltool py-mako && \
+        geoip openssl py2-pip intltool py2-mako && \
     apk add --no-cache --virtual .runtime_deluge \
         py-setuptools py2-openssl py-twisted py2-geoip && \
     pip install --no-cache-dir \
-        chardet pyxdg service_identity incremental constantly packaging && \
+        pyxdg service_identity incremental constantly packaging chardet && \
     wget \
         https://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz -O \
         /tmp/GeoIP.dat.gz && gunzip /tmp/GeoIP.dat.gz && \
@@ -146,6 +146,9 @@ EXPOSE \
     ${D_D_INCOMING_PORT} \
     ${D_D_INCOMING_PORT}/udp
 
+VOLUME \
+    ${D_DIR}/config
+
 ENTRYPOINT \
     ["/usr/bin/docker-entrypoint.sh"]
 
@@ -157,7 +160,7 @@ LABEL \
     c_software_name="Deluge Daemon" \
     c_software_url="http://deluge-torrent.org/" \
     image.version="0.7" \
-    date.version="4.12.2017" \
+    date.version="14.12.2017" \
     web_interface="true" \
     web_interface_port=${D_D_PORT} \
     exposed_ports=${D_D_PORT},${D_D_INCOMING_PORT},${D_D_INCOMING_PORT}/udp  \

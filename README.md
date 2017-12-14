@@ -23,7 +23,7 @@ Docker tags: latest/0.7 (1.3.15), dev (2.0b1)
 `--name c_deluged \`  
 `-p 50100:50100 \`  
 `-p 58846:58846 \`  
-`-v ~/deluge:/opt/deluge \`  
+`-v ~/deluge:/opt/deluge/complete \`  
 `sinaptika/deluged`
 
 4. Create a username and password for logging in to deluge daemon by running:   
@@ -163,3 +163,8 @@ If the container with deluge-web is running on the same docker host
 
 **0.7**
 - Upgraded libtorrent and deluge base images to Alpine 3.7
+- Defined config as a volume in dockerfile, so it can work as stated in the readme
+- Removed some WORKDIR layers for easier readability
+  - Specified Supervisord pid location
+  - Specified Supervisord log location
+- Replaced unrar with p7zip (extractor plugin uses it)
