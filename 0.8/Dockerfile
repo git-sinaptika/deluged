@@ -1,17 +1,17 @@
 #Maintainer info@sinaptika.net
 #deluge http://deluge-torrent.org/
 #deluged image
-FROM sinaptika/libtorrent:1.1.3 as builder_libtorrent
+FROM sinaptika/libtorrent:1.0.11 as builder_libtorrent
 
 FROM alpine:3.7
 
-#Enviroment variables for building the image.
+#Enviroment variables for building the image and
 #Enviroment variables for running the container.
 #Pass at docker create or docker run (-e VARIABLE=value).
 ENV \
-    DELUGE_VERSION="2.0b1" \
-    LIBTORRENT_VERSION="1.1.3" \
-    LIBTORRENT_SO="9" \
+    DELUGE_VERSION="1.3.15" \
+    LIBTORRENT_VERSION="1.0.11" \
+    LIBTORRENT_SO="8" \
     D_DIR="/opt/deluge" \
     D_USER="deluge" \
     D_GROUP="deluge" \
@@ -20,7 +20,7 @@ ENV \
     TZ="Europe/London" \
     D_UID="1000" \
     D_GID="1000" \
-    D_D_LOG_LEVEL="warn"
+    D_D_LOG_LEVEL="info"
 
 #Create directory structure and add user:group.
 RUN \
@@ -47,50 +47,50 @@ COPY \
 #Copy libtorrent-rasterbar from sinaptika/libtorrent
 COPY \
     --from=builder_libtorrent \
-        /usr/lib/libtorrent-rasterbar.la \
-        /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 \
-        /usr/lib/
+     /usr/lib/libtorrent-rasterbar.la \
+     /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 \
+     /usr/lib/
 
-#Copy python bindings from sinaptika/libtorrent
+#Copy libtorrent-rasterbar python from sinaptika/libtorrent
 COPY \
     --from=builder_libtorrent \
-        /usr/lib/python2.7/site-packages/libtorrent.so \
-        /usr/lib/python2.7/site-packages/python_libtorrent-${LIBTORRENT_VERSION}-py2.7.egg-info \
-        /usr/lib/python2.7/site-packages/
+     /usr/lib/python2.7/site-packages/libtorrent.so \
+     /usr/lib/python2.7/site-packages/python_libtorrent-${LIBTORRENT_VERSION}-py2.7.egg-info \
+     /usr/lib/python2.7/site-packages/
 
 #Copy pkgconfig
 COPY \
     --from=builder_libtorrent \
-        /usr/lib/pkgconfig/libtorrent-rasterbar.pc \
-        /usr/lib/pkgconfig/
+     /usr/lib/pkgconfig/libtorrent-rasterbar.pc \
+     /usr/lib/pkgconfig/
 
-#Libtorrent
-#deluge
+#Libtorrent deps
+#deluge build and runtime deps
 #automat package needed for deluge-web only
 #Cleanup and chmod for entrypoint and pwgen script.
 RUN \
     cd && \
     apk add --no-cache --virtual .runtime_libtorrent \
-        boost-python boost-system libgcc libstdc++ python2 && \
+        boost-python boost-system libstdc++ python2 && \
     ln -s /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 /usr/lib/libtorrent-rasterbar.so && \
     ln -s /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO} && \
     ldconfig -n -v /usr/lib && \
     apk add --no-cache --virtual .system \
-        tzdata su-exec tini pwgen unrar && \
+        tzdata su-exec tini pwgen p7zip && \
     apk add --no-cache --virtual .build_deluge \
-        gettext git geoip openssl py2-pip intltool py-mako && \
+        geoip openssl py2-pip intltool py2-mako && \
     apk add --no-cache --virtual .runtime_deluge \
         py-setuptools py2-openssl py-twisted py2-geoip && \
     pip install --no-cache-dir \
-        slimit chardet pyxdg service_identity incremental constantly packaging && \
+        pyxdg service_identity incremental constantly packaging chardet && \
     wget \
         https://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz -O \
         /tmp/GeoIP.dat.gz && gunzip /tmp/GeoIP.dat.gz && \
     mv \
         /tmp/GeoIP.dat /usr/share/GeoIP && \
-    git clone git://deluge-torrent.org/deluge.git && \
-    cd deluge && \
-    git checkout tags/deluge-${DELUGE_VERSION} && \
+    wget -qO- \
+        http://download.deluge-torrent.org/source/deluge-${DELUGE_VERSION}.tar.gz | tar xz && \
+    cd deluge-${DELUGE_VERSION} && \
     python setup.py -q build && \
     python setup.py -q install && \
     rm -rf \
@@ -101,7 +101,7 @@ RUN \
         /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/web/* \
         /usr/bin/deluge /usr/bin/deluge-web /usr/bin/deluge-gtk && \
     apk del .build_deluge && \
-    cd /root && \
+    cd && \
     rm -rf \
         /root/* && \
     chmod +x \
@@ -113,7 +113,6 @@ WORKDIR \
 
 #Deluged first run
 #Deluged configuration
-#Using status instead of config to print defaults
 RUN \
     /usr/bin/deluged \
         -c ${D_DIR}/config \
@@ -121,7 +120,7 @@ RUN \
         -L debug && \
     sleep 10 && \
     deluge-console \
-        -c ${D_DIR}/config "status" && \
+        -c ${D_DIR}/config "config" && \
     deluge-console \
         -c ${D_DIR}/config "config -s allow_remote true" && \
     deluge-console \
@@ -155,8 +154,8 @@ ENTRYPOINT \
 
 LABEL \
     net.sinaptika.maintainer="info@sinaptika.net" \
-    net.sinaptika.name="deluged" \
-    net.sinaptika.branch="1.3.15" \
+    net.sinaptika.name="stable" \
+    net.sinaptika.branch="master" \
     net.sinaptika.from="alpine:3.7" \
     c_software_name="Deluge Daemon" \
     c_software_url="http://deluge-torrent.org/" \

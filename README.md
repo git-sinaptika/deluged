@@ -168,3 +168,6 @@ If the container with deluge-web is running on the same docker host
   - Specified Supervisord pid location
   - Specified Supervisord log location
 - Replaced unrar with p7zip (extractor plugin uses it)
+
+**0.8**
+- Changed builder images (libtorrent)
