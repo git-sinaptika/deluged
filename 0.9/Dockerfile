@@ -1,13 +1,13 @@
 #Maintainer info@sinaptika.net
 #deluge http://deluge-torrent.org/
 #deluged image
-FROM sinaptika/libtorrent:1.1.3 as builder_libtorrent
+FROM sinaptika/libtorrent:1.0.11 as builder_libtorrent
 FROM alpine:3.7
 
 ENV \
-  DELUGE_VERSION="2.0b1" \
-  LIBTORRENT_VERSION="1.1.3" \
-  LIBTORRENT_SO="9" \
+  DELUGE_VERSION="1.3.15" \
+  LIBTORRENT_VERSION="1.0.11" \
+  LIBTORRENT_SO="8" \
   D_DIR="/opt/deluge" \
   D_USER="deluge" \
   D_GROUP="deluge" \
@@ -16,7 +16,7 @@ ENV \
   TZ="Europe/London" \
   D_UID="1000" \
   D_GID="1000" \
-  D_D_LOG_LEVEL="warn"
+  D_D_LOG_LEVEL="info"
 
 RUN \
   mkdir -p -v \
@@ -38,18 +38,18 @@ COPY \
   /usr/bin/
 COPY \
   --from=builder_libtorrent \
-    /usr/lib/libtorrent-rasterbar.la \
-    /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 \
-    /usr/lib/
+   /usr/lib/libtorrent-rasterbar.la \
+   /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 \
+   /usr/lib/
 COPY \
   --from=builder_libtorrent \
-    /usr/lib/python2.7/site-packages/libtorrent.so \
-    /usr/lib/python2.7/site-packages/python_libtorrent-${LIBTORRENT_VERSION}-py2.7.egg-info \
-    /usr/lib/python2.7/site-packages/
+   /usr/lib/python2.7/site-packages/libtorrent.so \
+   /usr/lib/python2.7/site-packages/python_libtorrent-${LIBTORRENT_VERSION}-py2.7.egg-info \
+   /usr/lib/python2.7/site-packages/
 COPY \
   --from=builder_libtorrent \
-    /usr/lib/pkgconfig/libtorrent-rasterbar.pc \
-    /usr/lib/pkgconfig/
+   /usr/lib/pkgconfig/libtorrent-rasterbar.pc \
+   /usr/lib/pkgconfig/
 
 RUN \
   apk add --no-cache --virtual .runtime_libtorrent \
@@ -57,25 +57,26 @@ RUN \
   apk add --no-cache --virtual .system \
     tzdata su-exec tini pwgen p7zip && \
   apk add --no-cache --virtual .build_deluge \
-    geoip openssl py2-pip intltool py-mako gettext git && \
+    geoip openssl py2-pip intltool py2-mako && \
   apk add --no-cache --virtual .runtime_deluge \
     py-setuptools py2-openssl py-twisted py2-geoip py2-packaging py2-chardet && \
   pip install --no-cache-dir \
-    pyxdg service_identity incremental constantly slimit && \
+    pyxdg service_identity incremental constantly && \
   ln -s /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 /usr/lib/libtorrent-rasterbar.so && \
   ln -s /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO}.0.0 /usr/lib/libtorrent-rasterbar.so.${LIBTORRENT_SO} && \
   ldconfig -n -v /usr/lib && \
   wget -O- \
     https://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz | \
     gunzip > /usr/share/GeoIP/GeoIP.dat && \
-  git clone git://deluge-torrent.org/deluge.git /deluge && \
-  cd /deluge && \
-  git checkout tags/deluge-${DELUGE_VERSION} && \
+  wget -O- \
+    http://download.deluge-torrent.org/source/deluge-${DELUGE_VERSION}.tar.gz | \
+    tar xz && \
+  cd /deluge-${DELUGE_VERSION} \
   python setup.py -q build && \
   python setup.py -q install && \
-  cd / && \
+  cd / \
   rm -rf \
-    /deluge \
+    /deluge-${DELUGE_VERSION} \
     /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/share/* \
     /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/data/pixmaps/* \
     /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/gtkui/* \
@@ -83,8 +84,6 @@ RUN \
     /usr/lib/python2.7/site-packages/deluge-${DELUGE_VERSION}-py2.7.egg/deluge/ui/web/* \
     /usr/bin/deluge /usr/bin/deluge-web /usr/bin/deluge-gtk && \
   apk del .build_deluge && \
-  rm -rf \
-    /root/* && \
   chmod +x \
     /usr/bin/deluged-pass.sh \
     /usr/bin/docker-entrypoint.sh
@@ -99,7 +98,7 @@ RUN \
     -L debug && \
   sleep 10 && \
   deluge-console \
-    -c ${D_DIR}/config "status" && \
+    -c ${D_DIR}/config "config" && \
   deluge-console \
     -c ${D_DIR}/config "config -s allow_remote true" && \
   deluge-console \
@@ -133,8 +132,8 @@ ENTRYPOINT \
 
 LABEL \
   net.sinaptika.maintainer="info@sinaptika.net" \
-  net.sinaptika.name="deluged" \
-  net.sinaptika.branch="dev" \
+  net.sinaptika.name="stable" \
+  net.sinaptika.branch="master" \
   net.sinaptika.from="alpine:3.7" \
   c_software_name="Deluge Daemon" \
   c_software_url="http://deluge-torrent.org/" \
